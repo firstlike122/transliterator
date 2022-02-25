@@ -33,18 +33,18 @@ class Transliteration:
 
     def transliterate(self, word):
         if self.isLang(word, self.latins):
-            return self.transliterator(word, self.l2c_compounds, self.l2c)
+            return self.transliterator(word, self.l2c, self.l2c_compounds)
         elif self.isLang(word, self.cyrillics):
-            return self.transliterator(word, self.c2l_compounds, self.c2l)
+            return self.transliterator(word, self.c2l, self.c2l_compounds)
         else:
             return word
 
-    def transliterator(self, text, dictionary2, dictionary1=[]):
-        for char in dictionary1.keys():
-            text = text.replace(char, dictionary1[char])
+    def transliterator(self, text, dictionary1, dictionary2=[]):
+        for char in dictionary2.keys():
+            text = text.replace(char, dictionary2[char])
         for i in text:
-            if i in dictionary2:
-                text = text.replace(i, dictionary2[i])
+            if i in dictionary1.keys():
+                text = text.replace(i, dictionary1[i])
         return text
 
     def isLang(self, text, langlist):
@@ -54,9 +54,10 @@ class Transliteration:
         return False
 
     def from_file(self, filename):
+        text = ''
         with open(filename, 'r') as f:
-            self.text += f.read()
-        self.tr_text = self.transliterate(self.text)
+            text += f.read()
+        self.tr_text = self.transliterate(text)
         return self.tr_text
 
     def to_file(self, text, filename):
